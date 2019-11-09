@@ -6,6 +6,9 @@ class User:
         self.password = password
         self.name = name
 
+    def __str__(self):
+        return '\'' + self.username + "\',\'" + self.email + "\',\'" + self.password + "\',\'" + self.name + "\'"
+
 
 class Category:
     def __init__(self, xid, user_id, name):
