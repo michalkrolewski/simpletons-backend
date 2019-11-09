@@ -1,5 +1,5 @@
-from flask import Flask, request
-
+from flask import Flask, request, Response
+from os import environ
 from db.dbconnector import DBConnector
 from objectparser import *
 
@@ -33,7 +33,23 @@ def getCategories():
     return getCategoriesResponse(categories)
 
 
-if __name__ == '__main__':
-    from os import environ
+@app.route('/fiszki/public/<int:category_id>', methods=['GET'])
+def getFiszki(category_id):
+    db = DBConnector()
+    category = db.getCategory(category_id)
+    if isPublic(category):
+        return Response(status=400, response="Category is private!")
 
-    app.run(host='0.0.0.0', port=environ.get("PORT", 5555))
+    fiszki = db.getFiszkiByCategory(category_id)
+    return getFiszkiResponse(fiszki)
+
+
+def isPublic(category):
+    return category.user_id is not None
+
+
+if __name__ == '__main__':
+    #TODO: do uruchomienia na heroku - przed commitem odkomentowac te linie
+     app.run(host='0.0.0.0', port=environ.get("PORT", 5555))
+    #TODO: do testowanie lokalnie - przed commitem zakomentowac
+    #app.run()

@@ -30,3 +30,13 @@ def getCategoriesResponse(categories):
                          "user_id": category.user_id,
                          "name": category.name})
     return jsonify(response)
+
+
+def getFiszkiResponse(fiszki):
+    response = []
+    for fiszka in fiszki:
+        response.append({"id": fiszka.xid,
+                         "category_id": fiszka.category_id,
+                         "language": fiszka.src_lang,
+                         "text": fiszka.name})
+    return jsonify(response)

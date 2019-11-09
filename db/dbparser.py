@@ -8,5 +8,16 @@ def parseUser(row):
 def parseCategories(rows):
     categories = []
     for row in rows:
-        categories.append(Category(row[0], row[1], row[2]))
+        categories.append(parseCategory(row))
     return categories
+
+
+def parseCategory(row):
+    return Category(row[0], row[1], row[2])
+
+
+def parseFiszki(rows):
+    fiszki = []
+    for row in rows:
+        fiszki.append(Fiszka(row[0], row[1], row[2], row[3]))
+    return fiszki
