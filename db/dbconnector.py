@@ -11,7 +11,7 @@ class DBConnector:
         self.sql_select_from_users = 'SELECT * FROM USERS WHERE id = {0}'
         self.sql_insert_into_users = 'INSERT INTO USERS(username, email, password, firstname) VALUES({0}) RETURNING id'
 
-        self.sql_select_from_categories = ''
+        self.sql_select_from_categories = 'SELECT * FROM CATEGORIES WHERE user_id IS NULL'
         self.sql_insert_into_categories = ''
 
         self.sql_select_from_fiszki = ''
@@ -47,3 +47,19 @@ class DBConnector:
         finally:
             if conn is not None:
                 conn.close()
+
+    def getCategories(self):
+        conn = None
+        try:
+            conn = psycopg2.connect(**self.connection_params)
+            cur = conn.cursor()
+            cur.execute(self.sql_select_from_categories)
+            rows = cur.fetchall()
+            cur.close()
+            return parseCategories(rows)
+        except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
+        finally:
+            if conn is not None:
+                conn.close()
+

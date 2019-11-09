@@ -26,5 +26,12 @@ def getUser(user_id):
     return getUserResponse(user)
 
 
+@app.route('/category/public/all', methods=['GET'])
+def getCategories():
+    db = DBConnector()
+    categories = db.getCategories()
+    return getCategoriesResponse(categories)
+
+
 if __name__ == '__main__':
     app.run()
