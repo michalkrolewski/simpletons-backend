@@ -26,5 +26,5 @@ def getUser(user_id):
     return getUserResponse(user)
 
 
-if __name__ == '__main__':
-    app.run()
+# if __name__ == '__main__':
+app.run()
