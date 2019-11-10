@@ -2,6 +2,7 @@ from flask import Flask, request, Response
 from os import environ
 from db.dbconnector import DBConnector
 from objectparser import *
+from utli import *
 
 app = Flask(__name__)
 
@@ -44,12 +45,19 @@ def getFiszki(category_id):
     return getFiszkiResponse(fiszki)
 
 
-def isPublic(category):
-    return category.user_id is not None
+@app.route('/category', methods=['POST'])
+def createCategory():
+    category, fiszki = jsonToCategoryAndFiszki(request.json)
+    category.user_id = 1  # TODO: ustawienie id zalogowanego uzytkownika
+    db = DBConnector()
+    xid = db.createCategory(category)
+    fillFiszkiWithCategoryId(fiszki, xid)
+    db.createFiszki(fiszki)
+    return createCategoryResponse(xid)
 
 
 if __name__ == '__main__':
-    #TODO: do uruchomienia na heroku - przed commitem odkomentowac te linie
-     app.run(host='0.0.0.0', port=environ.get("PORT", 5555))
-    #TODO: do testowanie lokalnie - przed commitem zakomentowac
-    #app.run()
+    # TODO: do uruchomienia na heroku - przed commitem odkomentowac te linie
+    app.run(host='0.0.0.0', port=environ.get("PORT", 5555))
+    # TODO: do testowanie lokalnie - przed commitem zakomentowac
+    # app.run()
