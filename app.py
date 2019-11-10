@@ -34,8 +34,9 @@ def getCategories():
     return getCategoriesResponse(categories)
 
 
-@app.route('/fiszki/public/<int:category_id>', methods=['GET'])
-def getFiszki(category_id):
+@app.route('/fiszki/public', methods=['GET'])
+def getFiszki():
+    category_id = request.args.get('category_id')
     db = DBConnector()
     category = db.getCategory(category_id)
     if isPublic(category):
