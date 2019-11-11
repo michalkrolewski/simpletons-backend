@@ -64,7 +64,7 @@ def getPrivateCategories():
     return getCategoriesResponse(categories)
 
 
-@app.route('/category/public/<int:category_id>', methods=['GET'])
+@app.route('/category/public/<int:category_id>/fiszki', methods=['GET'])
 def getPublicFiszki(category_id):
     db = DBConnector()
     categories = db.getPublicCategories()
@@ -76,7 +76,7 @@ def getPublicFiszki(category_id):
     return getFiszkiResponse(fiszki)
 
 
-@app.route('/category/private/<int:category_id>', methods=['GET'])
+@app.route('/category/private/<int:category_id>/fiszki', methods=['GET'])
 @auth.login_required
 def getPrivateFiszki(category_id):
     userid = getLoggedUserId(auth.username())
@@ -94,10 +94,12 @@ def getLoggedUserId(username):
     db = DBConnector()
     return db.getUserByUsername(username).xid;
 
+
 @app.route('/category', methods=['POST'])
+@auth.login_required
 def createCategory():
     category, fiszki = jsonToCategoryAndFiszki(request.json)
-    category.user_id = 1  # TODO: ustawienie id zalogowanego uzytkownika
+    category.user_id = getLoggedUserId(auth.username())
     db = DBConnector()
     xid = db.createCategory(category)
     fillFiszkiWithCategoryId(fiszki, xid)
