@@ -15,7 +15,6 @@ def getUserResponse(user):
     return jsonify({"id": user.xid,
                     "username": user.username,
                     "email": user.email,
-                    "password": user.password,
                     "firstname": user.name})
 
 
