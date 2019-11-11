@@ -11,6 +11,18 @@ def jsonToUser(json):
     return User(xid=0, username=username, email=email, password=password, name=firstname)
 
 
+def jsonToCategoryAndFiszki(json):
+    name = json.get('name')
+    jsons = json.get('fiszki')
+    fiszki = []
+    for js in jsons:
+        name = js.get('name')
+        lang = js.get('lang')
+        fiszki.append(Fiszka(xid=0, category_id=0, name=name, src_lang=lang))
+    category = Category(xid=0, user_id=0, name=name)
+    return category, fiszki
+
+
 def getUserResponse(user):
     return jsonify({"id": user.xid,
                     "username": user.username,
@@ -39,3 +51,7 @@ def getFiszkiResponse(fiszki):
                          "language": fiszka.src_lang,
                          "text": fiszka.name})
     return jsonify(response)
+
+
+def createCategoryResponse(xid):
+    return jsonify({"id": xid})

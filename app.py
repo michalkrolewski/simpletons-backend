@@ -1,9 +1,11 @@
-from flask import Flask, request, Response
-from os import environ
+from flask import Flask, request
 from db.dbconnector import DBConnector
 from flask_httpauth import HTTPBasicAuth
 from objectparser import *
 from werkzeug.security import generate_password_hash, check_password_hash
+from utli import *
+from os import environ
+
 
 app = Flask(__name__)
 auth = HTTPBasicAuth()
@@ -92,6 +94,15 @@ def getLoggedUserId(username):
     db = DBConnector()
     return db.getUserByUsername(username).xid;
 
+@app.route('/category', methods=['POST'])
+def createCategory():
+    category, fiszki = jsonToCategoryAndFiszki(request.json)
+    category.user_id = 1  # TODO: ustawienie id zalogowanego uzytkownika
+    db = DBConnector()
+    xid = db.createCategory(category)
+    fillFiszkiWithCategoryId(fiszki, xid)
+    db.createFiszki(fiszki)
+    return createCategoryResponse(xid)
 
 
 if __name__ == '__main__':

@@ -16,6 +16,9 @@ class Category:
         self.user_id = user_id
         self.name = name
 
+    def __str__(self):
+        return '\'' + str(self.user_id) + "\',\'" + self.name + "\'"
+
 
 class Fiszka:
     def __init__(self, xid, category_id, name, src_lang):
@@ -23,3 +26,6 @@ class Fiszka:
         self.category_id = category_id
         self.name = name
         self.src_lang = src_lang
+
+    def __str__(self):
+        return "('" + str(self.category_id) + "','" + self.src_lang + "','" + self.name + "')"
