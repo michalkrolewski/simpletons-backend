@@ -6,7 +6,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from utli import *
 from os import environ
 
-
 app = Flask(__name__)
 auth = HTTPBasicAuth()
 
@@ -18,10 +17,6 @@ def verify_password(username, password):
     if user is not None:
         return check_password_hash(user.password, password)
     return False
-
-@app.route('/')
-def hello_world():
-    return "Hello world"
 
 
 @app.route('/user', methods=['POST'])
@@ -109,6 +104,6 @@ def createCategory():
 
 if __name__ == '__main__':
     # TODO: do uruchomienia na heroku - przed commitem odkomentowac te linie
-    # app.run(host='0.0.0.0', port=environ.get("PORT", 5555))
+    app.run(host='0.0.0.0', port=environ.get("PORT", 5555))
     # TODO: do testowanie lokalnie - przed commitem zakomentowac
-    app.run()
+    # app.run()
