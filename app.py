@@ -94,12 +94,15 @@ def getLoggedUserId(username):
 @auth.login_required
 def createCategory():
     category, fiszki = jsonToCategoryAndFiszki(request.json)
-    category.user_id = getLoggedUserId(auth.username())
+    userId = getLoggedUserId(auth.username())
+    category.user_id = userId
     db = DBConnector()
-    xid = db.createCategory(category)
-    fillFiszkiWithCategoryId(fiszki, xid)
+    existingCategory = db.getCategory(userId, category.name)
+    if existingCategory is None:
+        existingCategory = db.createCategory(category)
+    fillFiszkiWithCategoryId(fiszki, existingCategory.xid)
     db.createFiszki(fiszki)
-    return createCategoryResponse(xid)
+    return createCategoryResponse(existingCategory.xid)
 
 
 if __name__ == '__main__':

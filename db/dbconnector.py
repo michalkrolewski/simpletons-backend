@@ -6,7 +6,7 @@ from db.dbparser import *
 class DBConnector:
 
     def __init__(self):
-        self.connection_params = config('C:\Projekty\studia\python\simpletons-backend\configs\database.ini', 'postgresql')
+        self.connection_params = config('configs/database.ini', 'postgresql')
 
         self.sql_select_from_users = 'SELECT * FROM USERS WHERE id = {0}'
         self.sql_select_from_users_by_username = 'SELECT * FROM USERS WHERE username=(%s)'
@@ -15,10 +15,11 @@ class DBConnector:
         self.sql_select_from_categories = 'SELECT * FROM CATEGORIES WHERE user_id IS NULL'
         self.sql_select_from_categories_by_user_id = 'SELECT * FROM CATEGORIES WHERE user_id = {0}'
         self.sql_select_from_categories_simple = 'SELECT * FROM CATEGORIES WHERE id = {0}'
+        self.sql_select_from_categories_by_user_and_name = 'SELECT * FROM CATEGORIES WHERE user_id = {0} AND name = \'{1}\''
         self.sql_insert_into_categories = 'INSERT INTO CATEGORIES(user_id, name) VALUES({0}) RETURNING id'
 
         self.sql_select_from_fiszki = 'SELECT * FROM FISZKI WHERE category_id = {0} '
-        self.sql_insert_into_fiszki = 'INSERT INTO FISZKI(category_id, src_lang, text) VALUES {0} RETURNING id'
+        self.sql_insert_into_fiszki = 'INSERT INTO FISZKI(category_id, src_lang, src_text, target_lang, target_text) VALUES {0} RETURNING id'
 
     def getUserById(self, id):
         conn = None
@@ -110,6 +111,22 @@ class DBConnector:
         finally:
             if conn is not None:
                 conn.close()
+
+    def getCategory(self, id, name):
+        conn = None
+        try:
+            conn = psycopg2.connect(**self.connection_params)
+            cur = conn.cursor()
+            cur.execute(self. sql_select_from_categories_by_user_and_name.format(id, name))
+            row = cur.fetchone()
+            cur.close()
+            return parseCategory(row)
+        except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
+        finally:
+            if conn is not None:
+                conn.close()
+
 
     def createCategory(self, category):
         conn = None

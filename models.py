@@ -21,11 +21,14 @@ class Category:
 
 
 class Fiszka:
-    def __init__(self, xid, category_id, name, src_lang):
+    def __init__(self, xid, category_id, src_text, src_lang, target_text, target_lang):
         self.xid = xid
         self.category_id = category_id
-        self.name = name
+        self.src_text = src_text
         self.src_lang = src_lang
+        self.target_text = target_text
+        self.target_lang = target_lang
 
     def __str__(self):
-        return "('" + str(self.category_id) + "','" + self.src_lang + "','" + self.name + "')"
+        return "('" + str(
+            self.category_id) + "','" + self.src_lang + "','" + self.src_text + "','" + self.target_lang + "','" + self.target_text + "')"
