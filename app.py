@@ -20,6 +20,7 @@ def verify_password(username, password):
 
 
 @app.route('/user', methods=['POST'])
+@auth.login_required
 def createUser():
     user = jsonToUser(request.json)
     user.password = generate_password_hash(user.password)
@@ -29,6 +30,7 @@ def createUser():
 
 
 @app.route('/user/<int:user_id>', methods=['GET'])
+@auth.login_required
 def getUserById(user_id):
     db = DBConnector()
     user = db.getUserById(user_id)
@@ -44,6 +46,7 @@ def getLoggedUserData():
 
 
 @app.route('/category/public', methods=['GET'])
+@auth.login_required
 def getPublicCategories():
     db = DBConnector()
     categories = db.getPublicCategories()
@@ -60,6 +63,7 @@ def getPrivateCategories():
 
 
 @app.route('/category/public/<int:category_id>/fiszki', methods=['GET'])
+@auth.login_required
 def getPublicFiszki(category_id):
     db = DBConnector()
     categories = db.getPublicCategories()
