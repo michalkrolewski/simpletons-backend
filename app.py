@@ -5,10 +5,11 @@ from objectparser import *
 from werkzeug.security import generate_password_hash, check_password_hash
 from utli import *
 from os import environ
+from flask_cors import CORS
 
 app = Flask(__name__)
 auth = HTTPBasicAuth()
-
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 @auth.verify_password
 def verify_password(username, password):
