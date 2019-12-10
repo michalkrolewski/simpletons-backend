@@ -10,7 +10,6 @@ from flask_cors import CORS
 app = Flask(__name__)
 auth = HTTPBasicAuth()
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
-
 @auth.verify_password
 def verify_password(username, password):
     db = DBConnector()
@@ -21,7 +20,6 @@ def verify_password(username, password):
 
 
 @app.route('/user', methods=['POST'])
-@auth.login_required
 def createUser():
     user = jsonToUser(request.json)
     user.password = generate_password_hash(user.password)
@@ -47,7 +45,6 @@ def getLoggedUserData():
 
 
 @app.route('/category/public', methods=['GET'])
-@auth.login_required
 def getPublicCategories():
     db = DBConnector()
     categories = db.getPublicCategories()
