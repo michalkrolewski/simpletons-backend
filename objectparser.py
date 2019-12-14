@@ -37,6 +37,16 @@ def createUserResponse(user_id):
     return jsonify({"id": user_id})
 
 
+def createUserBadResponse(u, user):
+    if u.email == user.email and u.username == user.username:
+        return 'User with this email and username already exist.', 400
+    if u.email == user.email:
+        return 'User with this email already exist.', 400
+    if u.username == user.username:
+        return 'User with this username already exist.', 400
+    return '', 400
+
+
 def getCategoriesResponse(categories):
     response = []
     for category in categories:

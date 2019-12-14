@@ -22,8 +22,11 @@ def verify_password(username, password):
 @app.route('/user', methods=['POST'])
 def createUser():
     user = jsonToUser(request.json)
-    user.password = generate_password_hash(user.password)
     db = DBConnector()
+    u = db.getUserByUsernameOrEmail(user.username, user.email)
+    if u is not None:
+        return createUserBadResponse(u, user)
+    user.password = generate_password_hash(user.password)
     user_id = db.createUser(user)
     return createUserResponse(user_id)
 
