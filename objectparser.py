@@ -1,6 +1,31 @@
 from flask import jsonify
 
 from models import *
+import json
+
+
+def getLanguagesList():
+    with open('languages.json') as json_file:
+        data = json.load(json_file)
+    return data
+
+
+def jsonToLanguage(json):
+    return json.get('name'), json.get('full_name')
+
+
+def addToLanguages(name, full_name):
+    with open('languages.json') as file:
+        data = json.load(file)
+        for dat in data:
+            if dat['name'] == name or dat['full_name'] == full_name:
+                return
+        data.append({
+            "name": name,
+            "full_name": full_name
+        })
+        with open('languages.json', 'w') as outfile:
+            json.dump(data, outfile)
 
 
 def jsonToUser(json):
