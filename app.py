@@ -66,7 +66,6 @@ def getPrivateCategories():
 
 
 @app.route('/category/public/<int:category_id>/fiszki', methods=['GET'])
-@auth.login_required
 def getPublicFiszki(category_id):
     db = DBConnector()
     categories = db.getPublicCategories()
