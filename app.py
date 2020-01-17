@@ -10,6 +10,8 @@ from flask_cors import CORS
 app = Flask(__name__)
 auth = HTTPBasicAuth()
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
+
+
 @auth.verify_password
 def verify_password(username, password):
     db = DBConnector()
@@ -22,8 +24,11 @@ def verify_password(username, password):
 @app.route('/user', methods=['POST'])
 def createUser():
     user = jsonToUser(request.json)
-    user.password = generate_password_hash(user.password)
     db = DBConnector()
+    u = db.getUserByUsernameOrEmail(user.username, user.email)
+    if u is not None:
+        return createUserBadResponse(u, user)
+    user.password = generate_password_hash(user.password)
     user_id = db.createUser(user)
     return createUserResponse(user_id)
 
@@ -61,7 +66,6 @@ def getPrivateCategories():
 
 
 @app.route('/category/public/<int:category_id>/fiszki', methods=['GET'])
-@auth.login_required
 def getPublicFiszki(category_id):
     db = DBConnector()
     categories = db.getPublicCategories()
@@ -108,8 +112,22 @@ def createCategory():
     return createCategoryResponse(existingCategory.xid)
 
 
+@app.route('/language', methods=['GET'])
+@auth.login_required
+def getLanguages():
+    return jsonify(getLanguagesList())
+
+
+@app.route('/language', methods=['POST'])
+@auth.login_required
+def addLanguage():
+    name, full_name = jsonToLanguage(request.json)
+    addToLanguages(name, full_name)
+    return jsonify(getLanguagesList())
+
+
 if __name__ == '__main__':
     # TODO: do uruchomienia na heroku - przed commitem odkomentowac te linie
-    app.run(host='0.0.0.0', port=environ.get("PORT", 5555))
+     app.run(host='0.0.0.0', port=environ.get("PORT", 5555))
     # TODO: do testowanie lokalnie - przed commitem zakomentowac
     #app.run()

@@ -1,6 +1,31 @@
 from flask import jsonify
 
 from models import *
+import json
+
+
+def getLanguagesList():
+    with open('languages.json') as json_file:
+        data = json.load(json_file)
+    return data
+
+
+def jsonToLanguage(json):
+    return json.get('name'), json.get('full_name')
+
+
+def addToLanguages(name, full_name):
+    with open('languages.json') as file:
+        data = json.load(file)
+        for dat in data:
+            if dat['name'] == name or dat['full_name'] == full_name:
+                return
+        data.append({
+            "name": name,
+            "full_name": full_name
+        })
+        with open('languages.json', 'w') as outfile:
+            json.dump(data, outfile)
 
 
 def jsonToUser(json):
@@ -35,6 +60,16 @@ def getUserResponse(user):
 
 def createUserResponse(user_id):
     return jsonify({"id": user_id})
+
+
+def createUserBadResponse(u, user):
+    if u.email == user.email and u.username == user.username:
+        return 'User with this email and username already exist.', 400
+    if u.email == user.email:
+        return 'User with this email already exist.', 400
+    if u.username == user.username:
+        return 'User with this username already exist.', 400
+    return '', 400
 
 
 def getCategoriesResponse(categories):

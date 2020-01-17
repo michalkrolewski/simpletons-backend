@@ -9,7 +9,8 @@ class DBConnector:
         self.connection_params = config('configs/database.ini', 'postgresql')
 
         self.sql_select_from_users = 'SELECT * FROM USERS WHERE id = {0}'
-        self.sql_select_from_users_by_username = 'SELECT * FROM USERS WHERE username=(%s)'
+        self.sql_select_from_users_by_username = 'SELECT * FROM USERS WHERE username = \'{0}\''
+        self.sql_select_from_users_by_username_or_email = 'SELECT * FROM USERS WHERE username = \'{0}\' or email=\'{1}\''
         self.sql_insert_into_users = 'INSERT INTO USERS(username, email, password, firstname) VALUES({0}) RETURNING id'
 
         self.sql_select_from_categories = 'SELECT * FROM CATEGORIES WHERE user_id IS NULL'
@@ -41,7 +42,22 @@ class DBConnector:
         try:
             conn = psycopg2.connect(**self.connection_params)
             cur = conn.cursor()
-            cur.execute(self.sql_select_from_users_by_username, (username,))
+            cur.execute(self.sql_select_from_users_by_username.format(username))
+            row = cur.fetchone()
+            cur.close()
+            return parseUser(row)
+        except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
+        finally:
+            if conn is not None:
+                conn.close()
+
+    def getUserByUsernameOrEmail(self, username, email):
+        conn = None
+        try:
+            conn = psycopg2.connect(**self.connection_params)
+            cur = conn.cursor()
+            cur.execute(self.sql_select_from_users_by_username_or_email.format(username, email))
             row = cur.fetchone()
             cur.close()
             return parseUser(row)
@@ -117,7 +133,7 @@ class DBConnector:
         try:
             conn = psycopg2.connect(**self.connection_params)
             cur = conn.cursor()
-            cur.execute(self. sql_select_from_categories_by_user_and_name.format(id, name))
+            cur.execute(self.sql_select_from_categories_by_user_and_name.format(id, name))
             row = cur.fetchone()
             cur.close()
             return parseCategory(row)
@@ -126,7 +142,6 @@ class DBConnector:
         finally:
             if conn is not None:
                 conn.close()
-
 
     def createCategory(self, category):
         conn = None
