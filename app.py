@@ -101,7 +101,8 @@ def createCategory():
     db = DBConnector()
     existingCategory = db.getCategory(userId, category.name)
     if existingCategory is None:
-        existingCategory = db.createCategory(category)
+        id= db.createCategory(category)
+        existingCategory = Category(id, userId, category.name)
     fillFiszkiWithCategoryId(fiszki, existingCategory.xid)
     db.createFiszki(fiszki)
     return createCategoryResponse(existingCategory.xid)
@@ -111,4 +112,4 @@ if __name__ == '__main__':
     # TODO: do uruchomienia na heroku - przed commitem odkomentowac te linie
     app.run(host='0.0.0.0', port=environ.get("PORT", 5555))
     # TODO: do testowanie lokalnie - przed commitem zakomentowac
-    # app.run()
+    #app.run()
