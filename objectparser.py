@@ -38,16 +38,15 @@ def jsonToUser(json):
 
 def jsonToCategoryAndFiszki(json):
     name = json.get('name')
+    src_lang = json.get('source_lang')
+    target_lang = json.get('target_lang')
     jsons = json.get('fiszki')
     fiszki = []
     for js in jsons:
         src_text = js.get('src_text')
-        src_lang = js.get('src_lang')
         target_text = js.get('target_text')
-        target_lang = js.get('target_lang')
-        fiszki.append(Fiszka(xid=0, category_id=0, src_text=src_text, src_lang=src_lang, target_text=target_text,
-                             target_lang=target_lang))
-    category = Category(xid=0, user_id=0, name=name)
+        fiszki.append(Fiszka(xid=0, category_id=0, src_text=src_text, target_text=target_text))
+    category = Category(xid=0, user_id=0, name=name, src_lang=src_lang, target_lang=target_lang)
     return category, fiszki
 
 
@@ -77,7 +76,9 @@ def getCategoriesResponse(categories):
     for category in categories:
         response.append({"id": category.xid,
                          "user_id": category.user_id,
-                         "name": category.name})
+                         "name": category.name,
+                         "source_lang": category.src_lang,
+                         "target_lang": category.target_lang})
     return jsonify(response)
 
 
@@ -86,9 +87,7 @@ def getFiszkiResponse(fiszki):
     for fiszka in fiszki:
         response.append({"id": fiszka.xid,
                          "category_id": fiszka.category_id,
-                         "source_language": fiszka.src_lang,
                          "source_text": fiszka.src_text,
-                         "target_language": fiszka.target_lang,
                          "target_text": fiszka.target_text})
     return jsonify(response)
 

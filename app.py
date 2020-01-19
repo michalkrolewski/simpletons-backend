@@ -6,6 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from utli import *
 from os import environ
 from flask_cors import CORS
+import base64
 
 app = Flask(__name__)
 auth = HTTPBasicAuth()
@@ -104,12 +105,12 @@ def createCategory():
     category.user_id = userId
     db = DBConnector()
     existingCategory = db.getCategory(userId, category.name)
-    if existingCategory is None:
-        id= db.createCategory(category)
-        existingCategory = Category(id, userId, category.name)
-    fillFiszkiWithCategoryId(fiszki, existingCategory.xid)
+    if existingCategory is not None:
+        return 'Category with name: ' + category.name + ' already exist.', 400
+    category_id = db.createCategory(category)
+    fillFiszkiWithCategoryId(fiszki, category_id)
     db.createFiszki(fiszki)
-    return createCategoryResponse(existingCategory.xid)
+    return createCategoryResponse(category_id)
 
 
 @app.route('/language', methods=['GET'])
@@ -128,6 +129,6 @@ def addLanguage():
 
 if __name__ == '__main__':
     # TODO: do uruchomienia na heroku - przed commitem odkomentowac te linie
-     app.run(host='0.0.0.0', port=environ.get("PORT", 5555))
+    # app.run(host='0.0.0.0', port=environ.get("PORT", 5555))
     # TODO: do testowanie lokalnie - przed commitem zakomentowac
-    #app.run()
+    app.run()
