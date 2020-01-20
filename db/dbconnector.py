@@ -17,10 +17,10 @@ class DBConnector:
         self.sql_select_from_categories_by_user_id = 'SELECT * FROM CATEGORIES WHERE user_id = {0}'
         self.sql_select_from_categories_simple = 'SELECT * FROM CATEGORIES WHERE id = {0}'
         self.sql_select_from_categories_by_user_and_name = 'SELECT * FROM CATEGORIES WHERE user_id = {0} AND name = \'{1}\''
-        self.sql_insert_into_categories = 'INSERT INTO CATEGORIES(user_id, name) VALUES({0}) RETURNING id'
+        self.sql_insert_into_categories = 'INSERT INTO CATEGORIES(user_id, name, source_lng, target_lng) VALUES({0}) RETURNING id'
 
         self.sql_select_from_fiszki = 'SELECT * FROM FISZKI WHERE category_id = {0} '
-        self.sql_insert_into_fiszki = 'INSERT INTO FISZKI(category_id, src_lang, src_text, target_lang, target_text) VALUES {0} RETURNING id'
+        self.sql_insert_into_fiszki = 'INSERT INTO FISZKI(category_id, src_text, target_text) VALUES {0} RETURNING id'
 
     def getUserById(self, id):
         conn = None

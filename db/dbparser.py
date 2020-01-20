@@ -13,11 +13,12 @@ def parseCategories(rows):
 
 
 def parseCategory(row):
-    return Category(row[0], row[1], row[2])
+    return Category(row[0], row[1], row[2], row[3], row[4])
 
 
 def parseFiszki(rows):
     fiszki = []
     for row in rows:
-        fiszki.append(Fiszka(row[0], row[1], row[2], row[3], row[4], row[5]))
+        fiszki.append(Fiszka(row[0], row[1], row[2], row[3]))
+
     return fiszki
